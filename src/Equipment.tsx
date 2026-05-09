@@ -2,86 +2,23 @@ import React, { useState } from 'react';
 import { Building2, Home, Truck, Phone, Mail, MapPin, ChevronRight, CheckCircle2, Instagram, ArrowLeft, Settings, Wrench, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-function InventoryCard({ item }: { item: any }) {
-  const [imageIndex, setImageIndex] = useState(0);
-  const images = item.images && item.images.length > 0 ? item.images : [item.fallbackImage];
-
-  const nextImage = () => setImageIndex((prev) => (prev + 1) % images.length);
-  const prevImage = () => setImageIndex((prev) => (prev - 1 + images.length) % images.length);
-
+function InventoryCard({ item }: { item: any; key?: any }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-      <div className="h-48 relative group">
-        <img 
-          src={images[imageIndex]?.startsWith('/') ? '.' + images[imageIndex] : images[imageIndex]} 
-          alt={item.name} 
-          className="w-full h-full object-cover transition-opacity duration-300"
-          onError={(e) => {
-            e.currentTarget.src = item.fallbackImage;
-          }}
-        />
-        <div className={`absolute top-3 right-3 px-3 py-1 rounded-full font-bold text-xs shadow-sm ${item.status === 'FOR SALE' ? 'bg-[#D48816] text-white' : 'bg-slate-900 text-white'}`}>
+      <div className="p-5 flex-grow flex justify-between items-start">
+        <div>
+          <h4 className="text-lg font-bold text-slate-900 mb-1">{item.name}</h4>
+          {item.details && <p className="text-sm text-slate-500">{item.details}</p>}
+        </div>
+        <div className={`px-3 py-1 rounded-full font-bold text-xs shadow-sm whitespace-nowrap ml-4 ${item.status === 'FOR SALE' ? 'bg-[#D48816] text-white' : 'bg-slate-900 text-white'}`}>
           {item.status}
         </div>
-
-        {images.length > 1 && (
-          <>
-            <button 
-              onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button 
-              onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-            
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1.5">
-              {images.map((_: any, idx: number) => (
-                <button 
-                  key={idx}
-                  onClick={() => setImageIndex(idx)}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${idx === imageIndex ? 'bg-[#D48816]' : 'bg-white/50 hover:bg-white'}`}
-                  aria-label={`Go to image ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-      <div className="p-5 flex-grow flex flex-col">
-        <h4 className="text-lg font-bold text-slate-900 mb-1">{item.name}</h4>
-        {item.details && <p className="text-sm text-slate-500 mb-3">{item.details}</p>}
       </div>
     </div>
   );
 }
 
 function Equipment() {
-  const [jcbImageIndex, setJcbImageIndex] = useState(0);
-  const jcbImages = [
-    '/jcb-1.jpg',
-    '/jcb-2.jpg',
-    '/jcb-3.jpg',
-    '/jcb-4.jpg'
-  ];
-
-  const [catImageIndex, setCatImageIndex] = useState(0);
-  const catImages = [
-    '/Cat-428F-1.jpg',
-    '/Cat-428F-2.jpg',
-    '/Cat-428F-3.jpg'
-  ];
-
-  const nextJcbImage = () => setJcbImageIndex((prev) => (prev + 1) % jcbImages.length);
-  const prevJcbImage = () => setJcbImageIndex((prev) => (prev - 1 + jcbImages.length) % jcbImages.length);
-
-  const nextCatImage = () => setCatImageIndex((prev) => (prev + 1) % catImages.length);
-  const prevCatImage = () => setCatImageIndex((prev) => (prev - 1 + catImages.length) % catImages.length);
-
   const inventory = {
     excavators: [
       { name: 'Cat 307', status: 'FOR SALE', images: ['/Cat 307 (Sale).jpg'], fallbackImage: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&q=80' },
@@ -226,47 +163,13 @@ function Equipment() {
             <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
               {/* JCB For Sale */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-100 flex flex-col">
-                <div className="h-64 relative group">
-                  <img 
-                    src={jcbImages[jcbImageIndex]?.startsWith('/') ? '.' + jcbImages[jcbImageIndex] : jcbImages[jcbImageIndex]} 
-                    alt={`JCB Backhoe for Sale - View ${jcbImageIndex + 1}`} 
-                    className="w-full h-full object-cover transition-opacity duration-300"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&q=80';
-                    }}
-                  />
-                  <div className="absolute top-4 right-4 bg-[#D48816] text-white px-4 py-1 rounded-full font-bold text-sm shadow-md z-10">
-                    FOR SALE
-                  </div>
-                  
-                  {/* Image Navigation */}
-                  <button 
-                    onClick={prevJcbImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button 
-                    onClick={nextJcbImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                  
-                  {/* Image Indicators */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-                    {jcbImages.map((_, idx) => (
-                      <button 
-                        key={idx}
-                        onClick={() => setJcbImageIndex(idx)}
-                        className={`w-2 h-2 rounded-full transition-colors ${idx === jcbImageIndex ? 'bg-[#D48816]' : 'bg-white/50 hover:bg-white'}`}
-                        aria-label={`Go to image ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
                 <div className="p-8 flex flex-col flex-grow">
-                  <h4 className="text-2xl font-bold text-slate-900 mb-2">JCB Backhoe Loader</h4>
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-2xl font-bold text-slate-900">JCB Backhoe Loader</h4>
+                    <span className="bg-[#D48816] text-white px-4 py-1 rounded-full font-bold text-sm shadow-md">
+                      FOR SALE
+                    </span>
+                  </div>
                   <p className="text-[#D48816] font-medium mb-4">Excellent Condition • Ready for Work</p>
                   <p className="text-slate-600 mb-6 flex-grow">
                     High-performance JCB backhoe loader available for immediate sale. Well-maintained and perfect for construction, excavation, and material handling tasks.
@@ -293,47 +196,13 @@ function Equipment() {
 
               {/* Cat 428F For Rent */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-100 flex flex-col">
-                <div className="h-64 relative group">
-                  <img 
-                    src={catImages[catImageIndex]?.startsWith('/') ? '.' + catImages[catImageIndex] : catImages[catImageIndex]} 
-                    alt={`Cat 428F Backhoe for Rent - View ${catImageIndex + 1}`} 
-                    className="w-full h-full object-cover transition-opacity duration-300"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&q=80';
-                    }}
-                  />
-                  <div className="absolute top-4 right-4 bg-slate-900 text-white px-4 py-1 rounded-full font-bold text-sm shadow-md z-10">
-                    FOR RENT
-                  </div>
-
-                  {/* Image Navigation */}
-                  <button 
-                    onClick={prevCatImage}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button 
-                    onClick={nextCatImage}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                  
-                  {/* Image Indicators */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-                    {catImages.map((_, idx) => (
-                      <button 
-                        key={idx}
-                        onClick={() => setCatImageIndex(idx)}
-                        className={`w-2 h-2 rounded-full transition-colors ${idx === catImageIndex ? 'bg-[#D48816]' : 'bg-white/50 hover:bg-white'}`}
-                        aria-label={`Go to image ${idx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
                 <div className="p-8 flex flex-col flex-grow">
-                  <h4 className="text-2xl font-bold text-slate-900 mb-2">Caterpillar 428F Backhoe</h4>
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-2xl font-bold text-slate-900">Caterpillar 428F Backhoe</h4>
+                    <span className="bg-slate-900 text-white px-4 py-1 rounded-full font-bold text-sm shadow-md">
+                      FOR RENT
+                    </span>
+                  </div>
                   <p className="text-slate-500 font-medium mb-4">Available for Short & Long-term Rent</p>
                   <p className="text-slate-600 mb-6 flex-grow">
                     Versatile and powerful Cat 428F backhoe loader. Ideal for trenching, back-filling, and material handling. Comes with a certified operator.
